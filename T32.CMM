@@ -1,0 +1,143 @@
+;Default startup program for TRACE32
+;
+;This startup program can be modified according to your needs.
+
+;choose hex mode for input
+ radix hex
+
+;Add some extra buttons to the toolbar
+
+ menu.rp
+ (
+  add
+  toolbar
+  (
+   separator
+   toolitem "Source/List" "list" "Data.List"
+   toolitem "Memory Dump" "dump" "Data.dump"
+   toolitem "Register" "reg" "Register"
+   separator
+   toolitem "Watch" ":varwatch" "Var.Watch"
+   toolitem "Stack" ":varframe" "Var.Frame /l /c"
+   toolitem "Automatic Watch" ":varref" "Var.Ref"
+   separator
+   toolitem "List Breakpoints" "break" "Break.List"
+   toolitem "List Symbols" "symbols" "sYmbol.Browse"
+   separator
+  )
+ )
+
+ if language()!=""
+ (
+  local &menuname
+  &menuname="~~/t32"+language()
+  menu.rp &menuname
+ )
+
+;Recall and Define History File
+ autostore , history
+
+
+;============================================================================================================
+;                                             DELPHI MODIFICATIONS
+;
+; The following bit of code requests the user to enter the drive letter that their work is mapped too
+; &Script_Root contains the root directory which when concatenated to the drive letter results in the
+; overall script directory being stored in &Script_Dir
+; e.g &Drive_Letter= "Z:"
+;       &Script_Root="\gill_vob\tools\lauterbach_scripts"
+; therefore
+;       &Script_Dir= Z:\gill_vob\tools\lauterbach_scripts
+;
+; The drive letter can also now be used to quickly navigate to the .ad .tad .elf and .bin files.
+;============================================================================================================
+
+
+;============================================================================================================
+;                                              GLOBAL VARIABLES
+;============================================================================================================
+
+
+
+global &Script_Dir
+global &Script_Dir_Local
+global &Trace_Data_Dir
+global &Elf_File_Dir
+global &Bin_File_Dir
+
+global &Drive_Letter
+global &Symbol_File
+global &User_Name
+
+
+
+;=============================================================================================================
+;                                              LOCAL VARIABLES
+;=============================================================================================================
+
+&Trace_Data_Root
+&Script_Root
+&Elf_File_Root
+&Bin_File_Root
+
+&Trace_Data_Root="\gill_vob\5_coding\trace_data"
+&Script_Root="\gill_vob\tools\lauterbach_scripts"
+&Elf_File_Root="\gill_vob\5_coding"
+&Bin_File_Root="\gill_vob\5_coding"
+
+
+;====get Drive Letter================
+
+Gosub GetDrive
+entry &Drive_Letter
+
+&Script_Dir_Local="h:\lauterbach_scripts"
+&Script_Dir="&Drive_Letter"+"&Script_Root"
+&Trace_Data_Dir="&Drive_Letter"+"&Trace_Data_Root"
+&Elf_File_Dir="&Drive_Letter"+"&Elf_File_Root"
+&Bin_File_Dir="&Drive_Letter"+"&Bin_File_Root"
+
+;set the default search paths for all laterbach scripts
+B::PATH "&(Script_Dir)" "&(Script_Dir_Local)"
+
+B::DO my_Apz_Menu.cmm
+B::
+
+enddo
+
+
+
+
+;====================================================================================================================
+;                                                 SUB-ROUTINES
+;====================================================================================================================
+
+
+; ===================================================================================================================
+; Subroutine Name: GetDrive
+; Parameter Returned:
+; Description: A drop down box is displayed showing drive letters, which the user can select from.
+; ===================================================================================================================
+
+GetDrive:
+
+  DIALOG
+  (
+      header "Select Drive Letter"
+      POS 1. 1. 25.
+BASE: TEXT "Select the drive you are mapped too"
+      POS 10. 3. 7.
+UNIT: PULLDOWN "A:,B:,C:,D:,E:,F:,G:,H:,I:,J:,K:,L:,M:,N:,O:,P:,Q:,R:,S:,T:,U:,V:,W:,X:,Y:,Z:"
+      (
+         ;if dialog.string(UNIT)=="A:\"
+         ;dialog.set BASE "A:\gv4556400.elf
+      )
+      POS 3. 5. 20.
+      DEFBUTTON " OK " "continue"
+  )
+  stop
+  &Drive_Letter=dialog.string(UNIT)
+  dialog.end
+  RETURN &Drive_Letter
+
+

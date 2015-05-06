@@ -1,0 +1,94 @@
+;===============================================my_PowerProbe.cmm====================================================
+;
+; Description   - Used to setup the power probe options and define the digital signal names for the PowerProbe
+; Action Button - No direct button attached
+;
+;====================================================================================================================
+
+
+;====================================================================================================================
+;                                              GLOBAL VARIABLES
+;====================================================================================================================
+
+;None
+
+;====================================================================================================================
+;                                               LOCAL VARIABLES
+;====================================================================================================================
+
+;None
+
+;====================================================================================================================
+;                                                    MAIN
+;====================================================================================================================
+
+
+ 	PP::
+
+    ANALYZER.MODE 50MHZ   ;set to 50hmhz here to allow all signals to be named
+
+ 	NAME.RESET
+    NAME.SET EXT.0 CAM
+ 	NAME.SET EXT.1 CRANK
+ 	NAME.SET EXT.2 INJ_1_A  RED
+ 	NAME.SET EXT.3 INJ_2_A  RED
+ 	NAME.SET EXT.4 REGEN_A  RED
+ 	NAME.SET EXT.5 CHARGE_A  RED
+ 	NAME.SET EXT.6 DISCHG_A  RED
+ 	NAME.SET EXT.7 ADC_TRIG_A  RED
+ 	NAME.SET EXT.8 DAC_SEL_A  RED
+ 	NAME.SET EXT.9 INJ_1_B
+ 	NAME.SET EXT.10 INJ_2_B
+ 	NAME.SET EXT.11 REGEN_B
+	NAME.SET EXT.12 CHARGE_B
+ 	NAME.SET EXT.13 DISCHG_B
+ 	NAME.SET EXT.14 ADC_TRIG_B
+ 	NAME.SET EXT.15 DAC_SEL_B
+ 	NAME.SET EXT.16 WINDOW_A  RED
+ 	NAME.SET EXT.17 CHOP_FB_A  RED
+ 	NAME.SET EXT.18 AMP_SEC_A  RED
+ 	NAME.SET EXT.19 UNUSED  RED
+ 	NAME.SET EXT.20 UNUSED  RED
+ 	NAME.SET EXT.21 HV_STAT_A  RED
+ 	NAME.SET EXT.22 FLT_SIG_A  RED
+ 	NAME.SET EXT.23 RGN_INHB_A  RED
+ 	NAME.SET EXT.24 WINDOW_B
+ 	NAME.SET EXT.25 CHOP_FB_B
+ 	NAME.SET EXT.26 AMP_SEC_B
+ 	NAME.SET EXT.27 UNUSED
+ 	NAME.SET EXT.28 UNUSED
+ 	NAME.SET EXT.29 HV_STAT_B
+ 	NAME.SET EXT.30 FLT_SIG_B
+ 	NAME.SET EXT.31 RGN_INHB_B
+	NAME.SET EXT.32 DAC_1_A  RED
+ 	NAME.SET EXT.33 DAC_2_A  RED
+	NAME.SET EXT.34 DAC_1_B
+ 	NAME.SET EXT.35 DAC_2_B
+
+    ANALYZER.MODE Fifo
+    ANALYZER.MODE 200MHZ    ;@200MHZ first 32 channels can be sampled, @400MHZ first 16 channels.
+	ANALYZER.AutoArm ON
+	ANALYZER.TDelay 50%
+	ANALYZER.TPreDelay 50%
+	B::
+
+
+ ENDDO
+
+
+
+;====================================================================================================================
+;                                                 SUB-ROUTINES
+;====================================================================================================================
+
+
+; ===================================================================================================================
+; Subroutine Name:
+; Parameter Returned:
+; Description:
+; ===================================================================================================================
+
+
+
+
+

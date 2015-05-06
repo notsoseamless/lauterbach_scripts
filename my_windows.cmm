@@ -1,0 +1,30 @@
+// T32 Tue May 08 15:28:01 2007
+
+ B::
+ 
+ TOOLBAR ON
+ STATUSBAR ON
+ WINPAGE.RESET
+ 
+ WINCLEAR
+ WINPOS 108.5 20.5 51. 15. 0. 0. W004
+ Var.Watch
+ 
+ 
+ WINPOS 107.63 39.75 67. 12. 0. 0. W003
+ Register
+ 
+ WINPOS 0.0 0.0625 82. 50. 0. 0. W000
+ CD.PEDIT C:\users\reesa\lauterbach\myFordDB_Restart.cmm
+ 
+ WINPOS 108.38 0.0 62. 16. 0. 1. W002
+ WINTABS 26. 26.
+ sYmbol.Browse.Function
+ 
+ WINPOS 0.625 2.5 104. 48. 13. 1. W001
+ WINTABS 10. 10. 25. 62.
+ Data.List
+ 
+ WINPAGE.SELECT P000     
+ 
+ ENDDO

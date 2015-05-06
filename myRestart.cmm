@@ -1,0 +1,419 @@
+;===============================================myFordDB_Restart.cmm====================================================
+;
+; Description -   May be used to flash boot or app code on MPC5554 parts upto REV A.
+; Action Button - This script is attached to the 'Configure Project' toolbar button.
+;
+;
+;
+; Example script for programming of MPC5554 internal flash.
+;
+; Internal Flash Memory (MCR.SIZE[0:3] = 0111; 2 MByte):
+;   Low address range   256 kByte (16, 48, 48, 16, 64, 64 kByte)
+;                       0x00000000--0x0003ffff
+;   Mid address range   256 kByte (2 * 128 kByte)
+;                       0x00040000--0x0007ffff
+;   High address range  1.5 MByte (12 * 128 kByte)
+;                       0x00080000--0x001fffff
+;   Shadow row          1 kByte
+;                       0x00fffc00--0x00ffffff
+;
+; Internal SRAM         64 kByte
+;                       0x40000000--0x4000ffff
+;
+; Flash register base address is 0xc3f88000
+;
+; Version of flash algorithm depends on processor revision:
+;   MPC5554 Rev 0.1               h7fa_v307.bin
+;   MPC5554 Rev 0.3               h7fa_v309.bin
+;   MPC5554 Rev 0.4               h7fa_v309.bin or h7fa_v310.bin
+;   MPC5554 Rev 0.5               h7fa_v309.bin or h7fa_v310.bin
+;   MPC5554 Rev A or higher       h7fa_v310.bin or higher
+;
+;   h7fa.bin contains latest version of flash algorithm.
+;
+; NOTES:
+;
+;   Up to core revision 0.5 the last high address space sector is
+;   reserved for BAM and should not be erased. Flash family code NOP
+;   is used to protect against unintended erasure or programming.
+;
+;   Up to core revision 0.5 shadow row should not be erased. Flash
+;   family code NOP is used to protect against unintended erasure
+;   or programming.
+;
+;   Flash register base address has to be 0xc3f88000, because target
+;   program does currently not support another base address.
+;
+; wrd - 16.03.2004
+;
+;====================================================================================================================
+
+
+;====================================================================================================================
+;                                              GLOBAL VARIABLES
+;====================================================================================================================
+
+;global &Symbol_File this is now declared at startup
+global &binFile
+global &action
+		  
+;====================================================================================================================
+;                                               LOCAL VARIABLES
+;====================================================================================================================
+&regbase=0xc3f88000
+&flashbase=0x00000000
+&flashsize="tbd"
+&shadowbase=0x00fffc00
+&shadowrow="no"
+&rambase=0x40000000
+&flashdriver="tbd.bin"
+&selFile=""
+; Optimize flash programming time by switching on PLL
+&optimize=0
+
+;====================================================================================================================
+;                                                    MAIN
+;====================================================================================================================
+
+;=========================
+; CPU setup
+
+B::
+
+SYSTEM.RESET
+SYSTEM.MEMACCESS NEXUS
+SYSTEM.CPUACCESS DENIED
+SYSTEM.CPU MPC5554
+SYSTEM.BDMCLOCK 4000000.
+SYSTEM.OPTION DUALPORT ON
+SYSTEM.OPTION DCREAD ON
+
+;if the nexus powertrace is used then do the following
+if A.CONFIG.POWERTRACE()
+(
+	SYSTEM.OPTION DTM READ
+    	SYSTEM.OPTION DMADTM OFF
+    	SYSTEM.OPTION MCKO 1/2
+)
+
+
+SYSTEM.MODE up
+;break.select program onchip
+map.bonchip 0x00000000--0x001FFFFF
+radix hex
+setup.bakfile off
+
+if &optimize==1
+(
+  ; setup PLL
+  Data.Set ASD:0xC3F80000 %LONG 0x06000000
+  ; set JTAG clock to 25 MHz
+  SYStem.BdmClock 25MHz
+)
+
+; initialize internal SRAM
+Data.Set A:0x40000000--0x4000FFFF %Quad 0
+
+; setup MMU for flash, RAM and register access
+MMU.TLBSET 0x1 0xC0000500 0xFFF0000A 0xFFF0003F
+MMU.TLBSET 0x2 0xC0000700 0x20000000 0x2000003F
+MMU.TLBSET 0x3 0xC0000400 0x40000008 0x4000003F
+MMU.TLBSET 0x4 0xC0000500 0xC3F00008 0xC3F0003F
+MMU.TLBSET 0x5 0xC0000700 0x00000000 0x0000003F
+
+; set BIUAPR register to make Flash memory visible for Nexus
+Data.Set ASD:0xC3F88020 %Long 0x000000FF
+
+;========================================================================
+; Check SIU_MIDR register to select flash driver depending on processor
+; revision
+  &corerevision=data.long(EA:0xC3F90004)
+
+PRINT "Core revision 0x" &corerevision
+if &corerevision==0x55540001||&corerevision==0x55540002
+(
+  ; Core revision 0.1 has revision ID 0x01 or 0x02
+  &flashdriver="~~/demo/PowerPC/flash/Quad/h7fa_v307.bin"
+  &flashsize=0x0001E0000
+  &shadowrow="no"
+)
+else if &corerevision==0x55540003
+(
+  ; Core revision 0.3, 0.4 and 0.5 have same revision ID 0x03
+  &flashdriver="~~/demo/PowerPC/flash/Quad/h7fa_v309.bin"
+  &flashsize=0x0001E0000
+  &shadowrow="no"
+)
+else if (&corerevision>=0x55540004)&&(&corerevision<=0x555400ff)
+(
+  ; Core revision A or higher. Revison A has ID 0x08 or 0x10
+  &flashdriver="~~/demo/PowerPC/flash/Quad/h7fa.bin"
+  &flashsize=0x000200000
+  &shadowrow="yes"
+)
+else
+(
+  PRINT %error "flash driver for core revision not defined"
+  END
+)
+
+;========================================================================
+; Flash declaration
+
+FLASH.RESet
+
+FLASH.Create 1. (&flashbase+0x00000000)++0x03fff TARGET Quad 0. ; L0
+FLASH.Create 1. (&flashbase+0x00004000)++0x0bfff TARGET Quad 1. ; L1
+FLASH.Create 1. (&flashbase+0x00010000)++0x0bfff TARGET Quad 2. ; L2
+FLASH.Create 1. (&flashbase+0x0001c000)++0x03fff TARGET Quad 3. ; L3
+FLASH.Create 1. (&flashbase+0x00020000)++0x0ffff TARGET Quad 4. ; L4
+FLASH.Create 1. (&flashbase+0x00030000)++0x0ffff TARGET Quad 5. ; L5
+FLASH.Create 2. (&flashbase+0x00040000)++0x1ffff TARGET Quad 0. ; M0
+FLASH.Create 2. (&flashbase+0x00060000)++0x1ffff TARGET Quad 1. ; M1
+&flashaddr=&flashbase+0x00080000
+&Hx=0.
+while &flashaddr<(&flashbase+&flashsize)
+(
+  FLASH.Create 3. &flashaddr++0x1ffff TARGET Quad &Hx ; H0..H11
+  &flashaddr=&flashaddr+0x20000
+  &Hx=&Hx+1.
+)
+if &flashsize<0x000200000
+(
+  ; H11, do not erase BAM (Boot assist module) for core revision older
+  ; than A.
+  FLASH.Create 3. &flashaddr++0x1ffff NOP Quad
+)
+; Declare shadow row
+if "&shadowrow"=="yes"
+(
+  FLASH.Create 4. (&shadowbase+0x00000000)++0x3ff TARGET Quad 0.
+)
+else
+(
+  FLASH.Create 4. (&shadowbase+0x00000000)++0x3ff NOP Quad
+)
+
+FLASH.TARGET &rambase E:&rambase+0x2000 0x1000 &flashdriver
+
+;========================================================================
+; Flash programming example
+;
+; Flash programming speed is about three times faster when memory class E:
+; is used for data buffer (DUALPORT memory access). For DUALPORT access it
+; is required to setup MemAccess NEXUS for both, NEXUS and JTAG debugger.
+;
+; Flash download has to use 64-bit write access (option /Quad).
+
+
+;==================================
+; Restart, Flash Boot or Flash App
+
+ Gosub ChooseAction
+ entry &action
+
+; Re-flash Boot
+ if &action==1
+ (
+  	GOSUB GetBinFile
+	entry &selFile
+	FLASH.Erase 0x000000--0xFFFF
+	FLASH.auto all
+	d.load.auto &selFile a:0x000000--0x00FFFF /Quad /more
+	d.load.s2record .\flash_code_erased.srec /noclear
+	FLASH.auto OFF
+; Load SBL into RAM
+;	d.load.auto &selFile a:0x40001810--0x40004000 /Quad 
+ )
+
+; Re-flash App
+ if &action==2
+ (
+  	GOSUB GetBinFile
+	entry &selFile
+	FLASH.Erase 0x010000--0x1FFFFF
+	FLASH.auto all
+	d.load.auto &selFile a:0x010000--0x1FFFCF /Quad /more
+	d.load.s2record .\flash_code_erased.srec /noclear
+	FLASH.Program OFF
+ )
+
+ ; Re-flash whole
+ if &action==3
+ (
+  	GOSUB GetBinFile
+	entry &selFile
+	FLASH.Erase 0x00000--0x1FFFFF
+	FLASH.Program ALL
+	d.load.auto &selFile a:0x00000--0x1FC14F /Quad /more
+	d.load.s2record .\flash_code_ok.srec /noclear
+	FLASH.Program OFF
+ )
+
+; else &action must equal 0
+
+;===========================
+; Load symbols and reset PC
+ Gosub GetSymbol_File
+ entry &selFile
+ d.load.elf &selFile /nocode /strippart 1
+; Load SBL into RAM
+; d.load.auto &selFile a:0x40001810--0x40004000 /Quad 
+symbol.spath "z:\"
+ 
+;==================================
+; Setup windows
+
+
+B::DO my_Windows.cmm
+;B::DO my_BreakPoints.cmm
+
+if POWERPROBE()
+(
+    B::DO my_PowerProbe.cmm
+)
+
+
+;===============================
+; Save windows layout if desired
+
+B::setup.quitdo myQuitBatchfile.cmm
+register.set IP _start
+
+ENDDO
+;=============================================
+; End of myFlashAlgorithm
+;=============================================
+
+;====================================================================================================================
+;                                                 SUB-ROUTINES
+;====================================================================================================================
+ 
+; ===================================================================================================================
+; Subroutine Name: GetBinFile
+; Parameter Returned:
+; Description:
+; ===================================================================================================================
+
+GetBinFile:
+&count=0
+
+  DIALOG
+  (
+      header "Browse for Bin File (*.bin, *.ulp)"
+      POS 1. 1. 40.
+      LAB: EDIT "" ""
+      POS 42. 1. 7.
+      BUTTON "Browse"
+      (
+         if "&binFile"==""
+         (
+             dialog.setfile LAB "&Bin_File_Dir"\*.*
+         )
+         else
+         (
+             &count=&count+1
+             if &count>1
+                dialog.setfile LAB "&Bin_File_Dir"\*.*
+             else
+                dialog.setfile LAB "&binFile"
+         )
+      )
+      POS 22. 3. 9.
+      DEFBUTTON " OK " "continue"
+  )
+  stop
+  &binFile=dialog.string(LAB)
+  dialog.end
+  RETURN &binFile
+
+
+; ===================================================================================================================
+; Subroutine Name: GetSymbol_File
+; Parameter Returned:
+; Description:
+; ===================================================================================================================
+
+GetSymbol_File:
+&count=0
+
+  DIALOG
+  (
+      header "Browse for Symbol File (*.elf)"
+      POS 1. 1. 40.
+      LAB: EDIT "" ""
+      POS 42. 1. 7.
+      BUTTON "Browse"
+      (
+         if "&Symbol_File"==""
+         (
+             dialog.setfile LAB "&Elf_File_Dir"\*.elf
+         )
+         else
+         (
+             &count=&count+1
+             if &count>1
+                dialog.setfile LAB "&Elf_File_Dir"\*.elf
+             else
+                dialog.setfile LAB "&Symbol_File"
+         )
+      )
+      POS 22. 3. 9.
+      DEFBUTTON " OK " "continue"
+  )
+  stop
+  &Symbol_File=dialog.string(LAB)
+  dialog.end
+  RETURN &Symbol_File
+
+
+; ===================================================================================================================
+; Subroutine Name: ChooseAction
+; Parameter Returned:
+; Description:
+; ===================================================================================================================
+
+ChooseAction:
+
+	dialog
+	(
+		header "Select desired action"
+		pos 1. 1. 10
+		button "Restart"
+		(
+			&action=0
+			continue
+		)
+		pos 1. 3. 10
+		button "Re-flash Boot"
+		(
+			&action=1
+			continue
+		)
+		pos 18. 3. 10
+		button "Re-flash App"
+		(
+			&action=2
+			continue
+		)
+		pos 18. 1. 10
+		button "Re-flash Whole"
+		(
+			&action=3
+			continue
+		)
+	)
+	stop
+	dialog.end
+	return &action
+
+
+
+
+
+
+
+
+
+
+

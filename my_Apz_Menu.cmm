@@ -1,0 +1,246 @@
+;===============================================my_Apz_Menu.cmm====================================================
+;
+; Description - Adds some extra buttons on the screen depending on what hardware is plugged in (if any)
+;              SIMULATOR - A trace button is added which is used to load the elf file, trace data, and timing data.
+;              BDM/NEXUS/POWERPROBE - 3 buttons are added, Reset, Restart and a save button which is used to save Trace/Timing data.
+;
+;
+; Action Button - None, This should be called at startup either manualy or directly through T32.cmm
+; Possible Upgrades -
+;====================================================================================================================
+
+
+;====================================================================================================================
+;                                              GLOBAL VARIABLES
+;====================================================================================================================
+
+;None
+
+;====================================================================================================================
+;                                               LOCAL VARIABLES
+;====================================================================================================================
+
+;None
+
+;====================================================================================================================
+;                                                    MAIN
+;====================================================================================================================
+
+
+
+menu.reprogram
+(&
+   ADD
+   MENU
+   (
+     POPUP "&APZ_Windows"
+     (
+       if SIMULATOR()
+       (
+           MENUITEM "&Program Flow"
+           (
+              WINPAGE.SELECT P000
+           )
+           MENUITEM "&Timing"
+           (
+              WINPAGE.SELECT P001
+           )
+           MENUITEM "&Program Flow / Timing"
+           (
+              WINPAGE.SELECT P002
+           )
+           MENUITEM "&Statistics"
+           (
+              WINPAGE.SELECT P003
+           )
+           MENUITEM "&Functions / Variable List"
+           (
+              WINPAGE.SELECT P004
+           )
+           MENUITEM "&Groups"
+           (
+              B::DO my_Trace_Group.cmm
+           )
+       )
+       else
+       (
+           MENUITEM "&Home Page"
+           (
+              WINPAGE.SELECT P000
+           )
+           MENUITEM "&Program Flow"
+           (
+              WINPAGE.SELECT P001
+           )
+           MENUITEM "&Timing"
+           (
+              WINPAGE.SELECT P002
+           )
+           MENUITEM "&Program Flow / Timing"
+           (
+              WINPAGE.SELECT P003
+           )
+           MENUITEM "&Groups"
+           (
+              B::DO my_Trace_Group.cmm
+           )
+        )
+      )
+   )
+
+
+
+   ADD
+   TOOLBAR
+   (
+
+      if SIMULATOR()
+      (
+       	TOOLITEM "View Trace Data" "do my_LoadTrace.cmm"
+	[
+	wwwwwwwwwwwwwwwww
+	BBBBBBBBwwwwwwwww
+	BBBBBBBBwwwwwwwww
+	wwwBBwwwwwwwwwwww
+	wwwBBwwwwwwwwwwww
+	wwwBBwwwwwwwwwwww
+	wwwBBwwBBBBBBBwww
+	wwwBBwwBBBBBBBBww
+	wwwBBwwBBwwwwBBww
+	wwwBBwwBBwwwBBwww
+	wwwBBwwBBBBBBBwww
+	wwwwwwwBBBBBwwwww
+	wwwwwwwBBwBBwwwww
+	wwwwwwwBBwwBBwwww
+	wwwwwwwBBwwwBBwww
+	wwwwwwwBBwwwwBBww
+    ]
+      	SEPARATOR
+      )
+      else
+      (
+
+	TOOLITEM "Reset PC" "do myReset.cmm"
+    [
+	wwwwwwRwwwwwwwww
+	wwwwwRRwwwwwwwww
+	wwwwRRRwwwwwwwww
+	wwwRRRRRRRRRwwww
+	wwRRRRRRRRRRRwww
+	wwwRRRRwwwwwRRww
+	wwwwRRRwwwwwwRRw
+	wwwwwRRwwwwwwRRw
+	wwwwwwRwwwwwwRRw
+	wwwwwwwwwwwwwRRw
+	wwwwwwwwwwwwwRRw
+	wwwwwwwwwwwwRRww
+	wwwwwwwwwwRRRwww
+	wwwwwwwRRRRRwwww
+	wwwRRRRRRwwwwwww
+	RRRRRRwwwwwwwwww
+	]
+          SEPARATOR
+
+	TOOLITEM "Re-start or re-flash" "do myRestart.cmm"
+	[
+	wwwwwwwBBwwwwwww
+	wwwwwwwBBwwwwwww
+	wwwwwwwBBwwwwwww
+	wwwwwwwBBwwwwwww
+	wwwwwwwBBwwwwwww
+	wwwwwwwBBwwwwwww
+	wwwwwwwBBwwwwwww
+	wwwwwwwBBwwwwwww
+	wwwwwwwBBwwwwwww
+	wwwwwwwBBwwwwwww
+	wwwwwwwBBwwwwwww
+	wwwBBBBBBBBBBwww
+	wwwwBBBBBBBBwwww
+	wwwwwBBBBBBwwwww
+	wwwwwwBBBBwwwwww
+	wwwwwwwBBwwwwwww
+	]
+	SEPARATOR
+	)
+
+	if (POWERPROBE())||(POWERTRACE())
+	(
+
+	TOOLITEM "Save Trace Data" "do my_SaveTrace.cmm"
+	[
+	BBBBBBBBBBBBBBBBB
+	BBBwwwwwwwwwwBBB
+	BBBwwwwwwwwwwBBB
+	BBBwwwwwwwwwwBBB
+	BBBwwwwwwwwwwBBB
+	BBBwwwwwwwwwwBBB
+	BBBBBBBBBBBBBBBBB
+	BBBBBBBBBBBBBBBBB
+	BBBBBBBBBBBBBBBBB
+	BBBBBBBBBBBBBBBBB
+	BBBBBBBBBBBBBBBBB
+	BBBBBBBBBBBBBBBBB
+	BBBBBwwwXXXXBBBBB
+	BBBBBwwwXXXXBBBBB
+	BBBBBwwwXXXXBBBBB
+	BBBBBwwwXXXXBBBBB
+	]
+      	SEPARATOR
+    )
+  )
+)
+
+enddo
+
+
+
+
+
+;====================================================================================================================
+;                                                 SUB-ROUTINES
+;====================================================================================================================
+
+
+; ===================================================================================================================
+; Subroutine Name:
+; Parameter Returned:
+; Description:
+; ===================================================================================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

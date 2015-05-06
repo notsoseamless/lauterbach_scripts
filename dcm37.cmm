@@ -1,0 +1,73 @@
+;; Flash setup for SH7251x internal FLASH (2MB) and EEPROM (128K)
+;;
+system.reset
+SYStem.Down
+SYStem.CPU SH7251
+;SYStem.CpuAccess Enable
+;SYStem.MemAccess CPU
+;map.bonchip 0x0++0x1FFFFF
+SYStem.JtagClock 10MHz
+system.option imaskasm on	;enables single stepping in asm code
+system.option imaskhll on	;enables single stepping in 'C' code
+SYStem.UP
+Data.Set 0xFFFE0440 0x0000      ;initialisation du registre ASECR
+ 				;Autorise l'écriture vers les regitres ERAM et dans la ERAM
+
+ 
+;========================================================================
+; Flash declaration
+
+FLASH.RESET
+FLASH.Create 1. 0x00010000--0x0009ffff 0x010000 TARGET Word
+FLASH.Create 1. 0x000a0000--0x001fffff 0x020000 TARGET Word
+ 
+FLASH.TARGET 0xfff81400 0xfff80000 0x1000 ~~/demo/sh/flash/word/sh7251.bin
+
+;========================================================================
+; Flash programming example
+ 
+DIALOG.YESNO "Program APP flash memory?"
+entry &progflash
+if &progflash
+goto label_2
+Data.Load Q:\gill_vob\5_coding\ssy_euro5_dcm37_integration_N0C03calmerg.s2 /Word /nocode
+goto label_1 
+ 
+;; Erase and Flash App
+label_2:
+FLASH.Erase 0x10000--0x1FFFFF	; Erase App sectors (EB08--EB27) 
+FLASH.AUTO 0x10000--0x1FFFFF
+Data.Load Q:\gill_vob\5_coding\ssy_euro5_dcm37_integration_N0C03calmerg.ulp /Word /more
+Data.Load.S3record C:\reesa\lb_cmm\ecu_status.s3 / noclear ; Set ECU_STATUS
+FLASH.AUTO.OFF
+
+;; Setup windows, set PC & configure on-chip breakpoints
+label_1:
+do myWindows.cmm	; get saved windows layout
+register.set PC _Hwi_Start_App
+break.Select.program Onchip
+
+;; Save configuration on exit if desired
+setup.quitdo myQuitBatchfile.cmm   
+ 
+ENDDO
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

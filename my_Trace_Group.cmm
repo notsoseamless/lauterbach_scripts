@@ -1,0 +1,542 @@
+;===============================================my_Trace_Group.cmm====================================================
+;
+; Description - Creates a dialog window which allows the user to monitor specific functions in the trace
+; Action Button - This script is attached to the 'Groups' button from the APZ_Windows drop down menu
+;
+;
+;====================================================================================================================
+
+
+;====================================================================================================================
+;                                              GLOBAL VARIABLES
+;====================================================================================================================
+
+;None
+
+;====================================================================================================================
+;                                               LOCAL VARIABLES
+;====================================================================================================================
+
+;None
+
+;====================================================================================================================
+;                                                    MAIN
+;====================================================================================================================
+
+B::
+
+
+dialog
+	(
+		header "Select desired group action"
+		pos 10. 1. 10
+		button "DELETE All"
+		(
+			B::GROUP.RESET
+			GROUP.CREATE "S_S Code" \s_s_sched\s_s_main /FUCHSIA
+            GROUP.HIDE "other"
+
+		)
+		pos 10. 3. 10
+		button "INJECTIONS"
+		(
+			GROUP.CREATE "hwi_event_generation" \hwi_event_generation /HIDE
+            GROUP.CREATE "Injections" \i_d_control_hv_rail
+            GROUP.CREATE "Injections" \p_l_collect_pulse_data
+            GROUP.CREATE "Injections" \p_l_inj_gen_pulse_tables
+            GROUP.CREATE "Injections" \p_l_inj_launch_sequence
+            GROUP.CREATE "Injections" \p_l_inj_launch_inj_sequence
+            GROUP.CREATE "Injections" \p_l_inj_start_inj_sequence
+            GROUP.HIDE "other"
+		)
+
+        pos 10. 5. 10
+		button "ALL IJD"
+		(
+             GROUP.CREATE "IJD" \P_L_Railp_Pulse_Meas /LIME
+             GROUP.CREATE "IJD" \P_L_Railp_Tdc_Meas /LIME
+             GROUP.CREATE "IJD" \P_L_Railp_Tooth_Meas /LIME
+             GROUP.CREATE "IJD" \i_d /LIME
+             GROUP.CREATE "IJD" \i_d_charge_control /LIME
+             GROUP.CREATE "IJD" \i_d_control_hv_rail /LIME
+             GROUP.CREATE "IJD" \i_d_control_stack_volt /LIME
+             GROUP.CREATE "IJD" \i_d_diag_lv_sc_tests /LIME
+             GROUP.CREATE "IJD" \i_d_diag_hw_flt_trip /LIME
+             GROUP.CREATE "IJD" \i_d_diag_running_discrete /LIME
+             GROUP.CREATE "IJD" \i_d_diag_start_up /LIME
+             GROUP.CREATE "IJD" \i_d_feedback /LIME
+             GROUP.CREATE "IJD" \i_d_inj_gen_pulses /LIME
+             GROUP.CREATE "IJD" \i_d_mode_control /LIME
+             GROUP.CREATE "IJD" \i_d_vc_calc_opening_times /LIME
+             GROUP.CREATE "IJD" \i_d_vc_calc_ref_open_time /LIME
+             GROUP.CREATE "IJD" \i_d_vc_calc_exp_open_volts /LIME
+             GROUP.CREATE "IJD" \i_d_vc_calc_target_volts /LIME
+             GROUP.CREATE "IJD" \i_d_update_log_timer /LIME
+             GROUP.CREATE "IJD" \p_l_dfi3_sub /LIME
+             GROUP.CREATE "IJD" \p_l_anlg_sub /LIME
+             GROUP.CREATE "IJD" \p_l_anlg_lib /LIME
+             GROUP.CREATE "IJD" \p_l_ecu_temp_calc /LIME
+             GROUP.CREATE "IJD" \p_l_inj_sub /LIME
+             GROUP.CREATE "IJD" \p_l_collect_pulse_data /LIME
+             GROUP.CREATE "IJD" \p_l_gen_lv_sc_test /LIME
+             GROUP.CREATE "IJD" \p_l_generic_pulse_req /LIME
+             GROUP.CREATE "IJD" \p_l_inj_adtrig_ptooth_req /LIME
+             GROUP.CREATE "IJD" \p_l_inj_gen_pulse_tables /LIME
+             GROUP.CREATE "IJD" \p_l_inj_launch_sequence /LIME
+             GROUP.CREATE "IJD" \p_l_inj_launch_inj_sequence /LIME
+             GROUP.CREATE "IJD" \p_l_inj_start_inj_sequence /LIME
+             GROUP.CREATE "IJD" \p_l_read_rail_p_tooth /LIME
+             GROUP.CREATE "IJD" \p_l_respond_to_inj_adc_cb /LIME
+             GROUP.CREATE "IJD" \p_l_respond_to_regen_cb /LIME
+             GROUP.HIDE "other"
+        )
+
+
+		pos 10. 7. 10
+		button "BLOIS CTP 38"
+		(
+			GROUP.CREATE "Blois tooth 38 Static tasks" \ICV_Key_Position_Deter /NAVY
+            GROUP.CREATE "Blois tooth 38 Static tasks" \icv_coolant_temp_calc /NAVY
+            GROUP.CREATE "Blois tooth 38 Static tasks" \FQD_Enabling_Dmnd /NAVY
+            GROUP.CREATE "Blois tooth 38 Static tasks" \FQD_Calc_Nrm_Aftr_Fuel_Dmnd /NAVY
+            GROUP.CREATE "Blois tooth 38 Static tasks" \FQD_Calc_Nrm_Pilo2_Dmnd /NAVY
+            GROUP.CREATE "Blois tooth 38 Static tasks" \FQD_Calc_Nrm_Pilo1_Dmnd /NAVY
+            GROUP.CREATE "Blois tooth 38 Static tasks" \FQD_Calc_Nrm_Main_Dmnd /NAVY
+            GROUP.CREATE "Blois tooth 38 Static tasks" \fqd_dmnd_swap /NAVY
+            GROUP.CREATE "Blois tooth 38 Static tasks" \FQD_Calc_Nrm_Pre_Dmnd /NAVY
+            GROUP.CREATE "Blois tooth 38 Static tasks" \fqd_deter_torque_min_active /NAVY
+            GROUP.CREATE "Blois tooth 38 Static tasks" \itd /NAVY
+            GROUP.CREATE "Blois tooth 38 Static tasks" \ITD_Calc_Nrm_Pilo2_Dmnd /NAVY
+            GROUP.CREATE "Blois tooth 38 Static tasks" \ITD_Calc_Nrm_Pilo1_Dmnd /NAVY
+            GROUP.CREATE "Blois tooth 38 Static tasks" \itd_dmnd_swap /NAVY
+            GROUP.CREATE "Blois tooth 38 Static tasks" \ITD_Calc_Nrm_Pre_Dmnd /NAVY
+            GROUP.CREATE "Blois tooth 38 Static tasks" \ITD_Calc_Nrm_Main_Dmnd /NAVY
+            GROUP.CREATE "Blois tooth 38 Static tasks" \ITD_Calc_Nrm_After_Dmnd /NAVY
+            GROUP.CREATE "Blois tooth 38 Static tasks" \i_c /NAVY
+            GROUP.CREATE "Blois tooth 38 Static tasks" \i_c_background_task /NAVY
+            GROUP.CREATE "Blois tooth 38 Static tasks" \i_c_balance_injectors /NAVY
+            GROUP.CREATE "Blois tooth 38 Static tasks" \I_C_Calc_Pulse_Timing_Pos /NAVY
+            GROUP.CREATE "Blois tooth 38 Static tasks" \I_C_Allocate_Pulse_Dmnd /NAVY
+            GROUP.CREATE "Blois tooth 38 Static tasks" \I_C_Calc_Pulse_Ton /NAVY
+            GROUP.CREATE "Blois tooth 38 Static tasks" \I_C_Calc_Ton_Corrected /NAVY
+            GROUP.CREATE "Blois tooth 38 Static tasks" \I_C_Calc_Ton_Estimated /NAVY
+            GROUP.CREATE "Blois tooth 38 Static tasks" \I_C_Calc_Pulse_Link /NAVY
+            GROUP.CREATE "Blois tooth 38 Static tasks" \I_C_Rail_Pressure_Estimator /NAVY
+            GROUP.CREATE "Blois tooth 38 Static tasks" \I_C_Speed_Conversion /NAVY
+            GROUP.CREATE "Blois tooth 38 Static tasks" \i_c_background_sync /NAVY
+            GROUP.CREATE "Blois tooth 38 Static tasks" \i_c_calc_c2i_pulse_offset /NAVY
+            GROUP.CREATE "Blois tooth 38 Static tasks" \i_c_acc_background_task /NAVY
+            GROUP.CREATE "Blois tooth 38 Static tasks" \i_c_accel_sub /NAVY
+            GROUP.CREATE "Blois tooth 38 Static tasks" \i_c_acc_control_strategy /NAVY
+            GROUP.CREATE "Blois tooth 38 Static tasks" \i_c_acc_check_strat_cond /NAVY
+            GROUP.CREATE "Blois tooth 38 Static tasks" \i_c_acc_calc_mdp_corrections /NAVY
+            GROUP.CREATE "Blois tooth 38 Static tasks" \i_c_acc_update_mode /NAVY
+            GROUP.CREATE "Blois tooth 38 Static tasks" \i_c_acc_test_mode /NAVY
+            GROUP.CREATE "Blois tooth 38 Static tasks" \i_c_acc_detect_mode /NAVY
+            GROUP.CREATE "Blois tooth 38 Static tasks" \i_c_acc_calib_mode /NAVY
+            GROUP.CREATE "Blois tooth 38 Static tasks" \P_L_Railp_Pulse_Delta_Calc /NAVY
+            GROUP.CREATE "Blois tooth 38 Static tasks" \i_i /NAVY
+            GROUP.HIDE "other"
+		)
+		pos 10. 9. 10
+		button "IJD CHANNEL INTERUPTS"
+		(
+			GROUP.CREATE "ijd_bank_A_ADC_TRIG" (etpua_channel30_interrupt_handlr)--(etpua_channel30_interrupt_handlr+0x1) /HIDE
+            GROUP.CREATE "ijd_bank_A_CHRG" (etpua_channel16_interrupt_handlr)--(etpua_channel16_interrupt_handlr+0x1) /HIDE
+            GROUP.CREATE "ijd_bank_A_DAC" (etpua_channel14_interrupt_handlr)--(etpua_channel14_interrupt_handlr+0x1) /HIDE
+            GROUP.CREATE "ijd_bank_A_DISCHG" (etpua_channel13_interrupt_handlr)--(etpua_channel13_interrupt_handlr+0x1) /HIDE
+            GROUP.CREATE "ijd_bank_A_DS20" (etpua_channel10_interrupt_handlr)--(etpua_channel10_interrupt_handlr+0x1) /HIDE
+            GROUP.CREATE "ijd_bank_A_REGEN" (etpua_channel08_interrupt_handlr)--(etpua_channel08_interrupt_handlr+0x1) /HIDE
+            GROUP.CREATE "ijd_bank_A_zINJ_1" (etpua_channel03_interrupt_handlr)--(etpua_channel03_interrupt_handlr+0x1) /HIDE
+            GROUP.CREATE "ijd_bank_A_zINJ_2" (etpua_channel04_interrupt_handlr)--(etpua_channel04_interrupt_handlr+0x1) /HIDE
+            GROUP.CREATE "ijd_bank_A_zINJ_3" (etpua_channel05_interrupt_handlr)--(etpua_channel05_interrupt_handlr+0x1) /HIDE
+            GROUP.CREATE "ijd_bank_B_ADC_TRIG" (etpua_channel31_interrupt_handlr)--(etpua_channel31_interrupt_handlr+0x1) /HIDE
+            GROUP.CREATE "ijd_bank_B_CAL" (etpub_channel29_interrupt_handlr)--(etpub_channel29_interrupt_handlr+0x1) /HIDE
+            GROUP.CREATE "ijd_bank_B_CHRG" (etpub_channel16_interrupt_handlr)--(etpub_channel16_interrupt_handlr+0x1) /HIDE
+            GROUP.CREATE "ijd_bank_B_DAC" (etpub_channel14_interrupt_handlr)--(etpub_channel14_interrupt_handlr+0x1) /HIDE
+            GROUP.CREATE "ijd_bank_B_DISCHG" (etpub_channel13_interrupt_handlr)--(etpub_channel13_interrupt_handlr+0x1) /HIDE
+            GROUP.CREATE "ijd_bank_B_DS20" (etpub_channel27_interrupt_handlr)--(etpub_channel27_interrupt_handlr+0x1) /HIDE
+            GROUP.CREATE "ijd_bank_B_REGEN" (etpub_channel08_interrupt_handlr)--(etpub_channel08_interrupt_handlr+0x1) /HIDE
+            GROUP.CREATE "ijd_bank_B_zINJ_1" (etpub_channel03_interrupt_handlr)--(etpub_channel03_interrupt_handlr+0x1) /HIDE
+            GROUP.CREATE "ijd_bank_B_zINJ_2" (etpub_channel04_interrupt_handlr)--(etpub_channel04_interrupt_handlr+0x1) /HIDE
+            GROUP.CREATE "ijd_bank_B_zINJ_3" (etpub_channel05_interrupt_handlr)--(etpub_channel05_interrupt_handlr+0x1) /HIDE
+            GROUP.CREATE "ijd_bank_VIRTUAL_CB" (etpua_channel29_interrupt_handlr)--(etpua_channel29_interrupt_handlr+0x1) /HIDE
+            GROUP.HIDE "other"
+		)
+		pos 10. 11. 10
+		button "ALL INTERUPTS"
+		(
+			GROUP.CREATE "Interupts" C:0x30000--0x3000F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30010--0x3001F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30020--0x3002F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30030--0x3003F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30040--0x3004F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30050--0x3005F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30060--0x3006F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30070--0x3007F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30080--0x3008F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30090--0x3009F /PURPLE
+            GROUP.CREATE "Interupts" C:0x300A0--0x300AF /PURPLE
+            GROUP.CREATE "Interupts" C:0x300B0--0x300BF /PURPLE
+            GROUP.CREATE "Interupts" C:0x300C0--0x300CF /PURPLE
+            GROUP.CREATE "Interupts" C:0x300D0--0x300DF /PURPLE
+            GROUP.CREATE "Interupts" C:0x300E0--0x300EF /PURPLE
+            GROUP.CREATE "Interupts" C:0x300F0--0x300FF /PURPLE
+            GROUP.CREATE "Interupts" C:0x30100--0x3010F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30110--0x3011F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30120--0x3012F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30130--0x3013F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30140--0x3014F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30150--0x3015F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30160--0x3016F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30170--0x3017F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30180--0x3018F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30190--0x3019F /PURPLE
+            GROUP.CREATE "Interupts" C:0x301A0--0x301AF /PURPLE
+            GROUP.CREATE "Interupts" C:0x301B0--0x301BF /PURPLE
+            GROUP.CREATE "Interupts" C:0x301C0--0x301CF /PURPLE
+            GROUP.CREATE "Interupts" C:0x301D0--0x301DF /PURPLE
+            GROUP.CREATE "Interupts" C:0x301E0--0x301EF /PURPLE
+            GROUP.CREATE "Interupts" C:0x301F0--0x301FF /PURPLE
+            GROUP.CREATE "Interupts" C:0x30200--0x3020F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30210--0x3021F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30220--0x3022F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30230--0x3023F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30240--0x3024F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30250--0x3025F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30260--0x3026F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30270--0x3027F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30280--0x3028F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30290--0x3029F /PURPLE
+            GROUP.CREATE "Interupts" C:0x302A0--0x302AF /PURPLE
+            GROUP.CREATE "Interupts" C:0x302B0--0x302BF /PURPLE
+            GROUP.CREATE "Interupts" C:0x302C0--0x302CF /PURPLE
+            GROUP.CREATE "Interupts" C:0x302D0--0x302DF /PURPLE
+            GROUP.CREATE "Interupts" C:0x302E0--0x302EF /PURPLE
+            GROUP.CREATE "Interupts" C:0x302F0--0x302FF /PURPLE
+            GROUP.CREATE "Interupts" C:0x30300--0x3030F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30310--0x3031F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30320--0x3032F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30330--0x3033F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30340--0x3034F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30350--0x3035F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30360--0x3036F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30370--0x3037F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30380--0x3038F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30390--0x3039F /PURPLE
+            GROUP.CREATE "Interupts" C:0x303A0--0x303AF /PURPLE
+            GROUP.CREATE "Interupts" C:0x303B0--0x303BF /PURPLE
+            GROUP.CREATE "Interupts" C:0x303C0--0x303CF /PURPLE
+            GROUP.CREATE "Interupts" C:0x303D0--0x303DF /PURPLE
+            GROUP.CREATE "Interupts" C:0x303E0--0x303EF /PURPLE
+            GROUP.CREATE "Interupts" C:0x303F0--0x303FF /PURPLE
+            GROUP.CREATE "Interupts" C:0x30400--0x3040F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30410--0x3041F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30420--0x3042F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30430--0x3043F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30440--0x3044F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30450--0x3045F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30460--0x3046F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30470--0x3047F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30480--0x3048F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30490--0x3049F /PURPLE
+            GROUP.CREATE "Interupts" C:0x304A0--0x304AF /PURPLE
+            GROUP.CREATE "Interupts" C:0x304B0--0x304BF /PURPLE
+            GROUP.CREATE "Interupts" C:0x304C0--0x304CF /PURPLE
+            GROUP.CREATE "Interupts" C:0x304D0--0x304DF /PURPLE
+            GROUP.CREATE "Interupts" C:0x304E0--0x304EF /PURPLE
+            GROUP.CREATE "Interupts" C:0x304F0--0x304FF /PURPLE
+            GROUP.CREATE "Interupts" C:0x30500--0x3050F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30510--0x3051F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30520--0x3052F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30530--0x3053F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30540--0x3054F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30550--0x3055F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30560--0x3056F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30570--0x3057F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30580--0x3058F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30590--0x3059F /PURPLE
+            GROUP.CREATE "Interupts" C:0x305A0--0x305AF /PURPLE
+            GROUP.CREATE "Interupts" C:0x305B0--0x305BF /PURPLE
+            GROUP.CREATE "Interupts" C:0x305C0--0x305CF /PURPLE
+            GROUP.CREATE "Interupts" C:0x305D0--0x305DF /PURPLE
+            GROUP.CREATE "Interupts" C:0x305E0--0x305EF /PURPLE
+            GROUP.CREATE "Interupts" C:0x305F0--0x305FF /PURPLE
+            GROUP.CREATE "Interupts" C:0x30600--0x3060F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30610--0x3061F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30620--0x3062F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30630--0x3063F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30640--0x3064F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30650--0x3065F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30660--0x3066F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30670--0x3067F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30680--0x3068F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30690--0x3069F /PURPLE
+            GROUP.CREATE "Interupts" C:0x306A0--0x306AF /PURPLE
+            GROUP.CREATE "Interupts" C:0x306B0--0x306BF /PURPLE
+            GROUP.CREATE "Interupts" C:0x306C0--0x306CF /PURPLE
+            GROUP.CREATE "Interupts" C:0x306D0--0x306DF /PURPLE
+            GROUP.CREATE "Interupts" C:0x306E0--0x306EF /PURPLE
+            GROUP.CREATE "Interupts" C:0x306F0--0x306FF /PURPLE
+            GROUP.CREATE "Interupts" C:0x30700--0x3070F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30710--0x3071F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30720--0x3072F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30730--0x3073F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30740--0x3074F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30750--0x3075F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30760--0x3076F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30770--0x3077F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30780--0x3078F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30790--0x3079F /PURPLE
+            GROUP.CREATE "Interupts" C:0x307A0--0x307AF /PURPLE
+            GROUP.CREATE "Interupts" C:0x307B0--0x307BF /PURPLE
+            GROUP.CREATE "Interupts" C:0x307C0--0x307CF /PURPLE
+            GROUP.CREATE "Interupts" C:0x307D0--0x307DF /PURPLE
+            GROUP.CREATE "Interupts" C:0x307E0--0x307EF /PURPLE
+            GROUP.CREATE "Interupts" C:0x307F0--0x307FF /PURPLE
+            GROUP.CREATE "Interupts" C:0x30800--0x3080F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30810--0x3081F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30820--0x3082F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30830--0x3083F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30840--0x3084F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30850--0x3085F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30860--0x3086F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30870--0x3087F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30880--0x3088F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30890--0x3089F /PURPLE
+            GROUP.CREATE "Interupts" C:0x308A0--0x308AF /PURPLE
+            GROUP.CREATE "Interupts" C:0x308B0--0x308BF /PURPLE
+            GROUP.CREATE "Interupts" C:0x308C0--0x308CF /PURPLE
+            GROUP.CREATE "Interupts" C:0x308D0--0x308DF /PURPLE
+            GROUP.CREATE "Interupts" C:0x308E0--0x308EF /PURPLE
+            GROUP.CREATE "Interupts" C:0x308F0--0x308FF /PURPLE
+            GROUP.CREATE "Interupts" C:0x30900--0x3090F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30910--0x3091F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30920--0x3092F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30930--0x3093F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30940--0x3094F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30950--0x3095F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30960--0x3096F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30970--0x3097F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30980--0x3098F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30990--0x3099F /PURPLE
+            GROUP.CREATE "Interupts" C:0x309A0--0x309AF /PURPLE
+            GROUP.CREATE "Interupts" C:0x309B0--0x309BF /PURPLE
+            GROUP.CREATE "Interupts" C:0x309C0--0x309CF /PURPLE
+            GROUP.CREATE "Interupts" C:0x309D0--0x309DF /PURPLE
+            GROUP.CREATE "Interupts" C:0x309E0--0x309EF /PURPLE
+            GROUP.CREATE "Interupts" C:0x309F0--0x309FF /PURPLE
+            GROUP.CREATE "Interupts" C:0x30A00--0x30A0F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30A10--0x30A1F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30A20--0x30A2F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30A30--0x30A3F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30A40--0x30A4F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30A50--0x30A5F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30A60--0x30A6F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30A70--0x30A7F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30A80--0x30A8F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30A90--0x30A9F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30AA0--0x30AAF /PURPLE
+            GROUP.CREATE "Interupts" C:0x30AB0--0x30ABF /PURPLE
+            GROUP.CREATE "Interupts" C:0x30AC0--0x30ACF /PURPLE
+            GROUP.CREATE "Interupts" C:0x30AD0--0x30ADF /PURPLE
+            GROUP.CREATE "Interupts" C:0x30AE0--0x30AEF /PURPLE
+            GROUP.CREATE "Interupts" C:0x30AF0--0x30AFF /PURPLE
+            GROUP.CREATE "Interupts" C:0x30B00--0x30B0F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30B10--0x30B1F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30B20--0x30B2F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30B30--0x30B3F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30B40--0x30B4F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30B50--0x30B5F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30B60--0x30B6F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30B70--0x30B7F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30B80--0x30B8F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30B90--0x30B9F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30BA0--0x30BAF /PURPLE
+            GROUP.CREATE "Interupts" C:0x30BB0--0x30BBF /PURPLE
+            GROUP.CREATE "Interupts" C:0x30BC0--0x30BCF /PURPLE
+            GROUP.CREATE "Interupts" C:0x30BD0--0x30BDF /PURPLE
+            GROUP.CREATE "Interupts" C:0x30BE0--0x30BEF /PURPLE
+            GROUP.CREATE "Interupts" C:0x30BF0--0x30BFF /PURPLE
+            GROUP.CREATE "Interupts" C:0x30C00--0x30C0F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30C10--0x30C1F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30C20--0x30C2F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30C30--0x30C3F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30C40--0x30C4F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30C50--0x30C5F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30C60--0x30C6F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30C70--0x30C7F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30C80--0x30C8F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30C90--0x30C9F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30CA0--0x30CAF /PURPLE
+            GROUP.CREATE "Interupts" C:0x30CB0--0x30CBF /PURPLE
+            GROUP.CREATE "Interupts" C:0x30CC0--0x30CCF /PURPLE
+            GROUP.CREATE "Interupts" C:0x30CD0--0x30CDF /PURPLE
+            GROUP.CREATE "Interupts" C:0x30CE0--0x30CEF /PURPLE
+            GROUP.CREATE "Interupts" C:0x30CF0--0x30CFF /PURPLE
+            GROUP.CREATE "Interupts" C:0x30D00--0x30D0F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30D10--0x30D1F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30D20--0x30D2F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30D30--0x30D3F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30D40--0x30D4F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30D50--0x30D5F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30D60--0x30D6F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30D70--0x30D7F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30D80--0x30D8F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30D90--0x30D9F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30DA0--0x30DAF /PURPLE
+            GROUP.CREATE "Interupts" C:0x30DB0--0x30DBF /PURPLE
+            GROUP.CREATE "Interupts" C:0x30DC0--0x30DCF /PURPLE
+            GROUP.CREATE "Interupts" C:0x30DD0--0x30DDF /PURPLE
+            GROUP.CREATE "Interupts" C:0x30DE0--0x30DEF /PURPLE
+            GROUP.CREATE "Interupts" C:0x30DF0--0x30DFF /PURPLE
+            GROUP.CREATE "Interupts" C:0x30E00--0x30E0F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30E10--0x30E1F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30E20--0x30E2F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30E30--0x30E3F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30E40--0x30E4F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30E50--0x30E5F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30E60--0x30E6F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30E70--0x30E7F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30E80--0x30E8F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30E90--0x30E9F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30EA0--0x30EAF /PURPLE
+            GROUP.CREATE "Interupts" C:0x30EB0--0x30EBF /PURPLE
+            GROUP.CREATE "Interupts" C:0x30EC0--0x30ECF /PURPLE
+            GROUP.CREATE "Interupts" C:0x30ED0--0x30EDF /PURPLE
+            GROUP.CREATE "Interupts" C:0x30EE0--0x30EEF /PURPLE
+            GROUP.CREATE "Interupts" C:0x30EF0--0x30EFF /PURPLE
+            GROUP.CREATE "Interupts" C:0x30F00--0x30F0F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30F10--0x30F1F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30F20--0x30F2F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30F30--0x30F3F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30F40--0x30F4F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30F50--0x30F5F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30F60--0x30F6F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30F70--0x30F7F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30F80--0x30F8F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30F90--0x30F9F /PURPLE
+            GROUP.CREATE "Interupts" C:0x30FA0--0x30FAF /PURPLE
+            GROUP.CREATE "Interupts" C:0x30FB0--0x30FBF /PURPLE
+            GROUP.CREATE "Interupts" C:0x30FC0--0x30FCF /PURPLE
+            GROUP.CREATE "Interupts" C:0x30FD0--0x30FDF /PURPLE
+            GROUP.CREATE "Interupts" C:0x30FE0--0x30FEF /PURPLE
+            GROUP.CREATE "Interupts" C:0x30FF0--0x30FFF /PURPLE
+            GROUP.CREATE "Interupts" C:0x31000--0x3100F /PURPLE
+            GROUP.CREATE "Interupts" C:0x31010--0x3101F /PURPLE
+            GROUP.CREATE "Interupts" C:0x31020--0x3102F /PURPLE
+            GROUP.CREATE "Interupts" C:0x31030--0x3103F /PURPLE
+            GROUP.CREATE "Interupts" C:0x31040--0x3104F /PURPLE
+            GROUP.CREATE "Interupts" C:0x31050--0x3105F /PURPLE
+            GROUP.CREATE "Interupts" C:0x31060--0x3106F /PURPLE
+            GROUP.CREATE "Interupts" C:0x31070--0x3107F /PURPLE
+            GROUP.CREATE "Interupts" C:0x31080--0x3108F /PURPLE
+            GROUP.CREATE "Interupts" C:0x31090--0x3109F /PURPLE
+            GROUP.CREATE "Interupts" C:0x310A0--0x310AF /PURPLE
+            GROUP.CREATE "Interupts" C:0x310B0--0x310BF /PURPLE
+            GROUP.CREATE "Interupts" C:0x310C0--0x310CF /PURPLE
+            GROUP.CREATE "Interupts" C:0x310D0--0x310DF /PURPLE
+            GROUP.CREATE "Interupts" C:0x310E0--0x310EF /PURPLE
+            GROUP.CREATE "Interupts" C:0x310F0--0x310FF /PURPLE
+            GROUP.CREATE "Interupts" C:0x31100--0x3110F /PURPLE
+            GROUP.CREATE "Interupts" C:0x31110--0x3111F /PURPLE
+            GROUP.CREATE "Interupts" C:0x31120--0x3112F /PURPLE
+            GROUP.CREATE "Interupts" C:0x31130--0x3113F /PURPLE
+            GROUP.CREATE "Interupts" C:0x31140--0x3114F /PURPLE
+            GROUP.CREATE "Interupts" C:0x31150--0x3115F /PURPLE
+            GROUP.CREATE "Interupts" C:0x31160--0x3116F /PURPLE
+            GROUP.CREATE "Interupts" C:0x31170--0x3117F /PURPLE
+            GROUP.CREATE "Interupts" C:0x31180--0x3118F /PURPLE
+            GROUP.CREATE "Interupts" C:0x31190--0x3119F /PURPLE
+            GROUP.CREATE "Interupts" C:0x311A0--0x311AF /PURPLE
+            GROUP.CREATE "Interupts" C:0x311B0--0x311BF /PURPLE
+            GROUP.CREATE "Interupts" C:0x311C0--0x311CF /PURPLE
+            GROUP.CREATE "Interupts" C:0x311D0--0x311DF /PURPLE
+            GROUP.CREATE "Interupts" C:0x311E0--0x311EF /PURPLE
+            GROUP.CREATE "Interupts" C:0x311F0--0x311FF /PURPLE
+            GROUP.CREATE "Interupts" C:0x31200--0x3120F /PURPLE
+            GROUP.CREATE "Interupts" C:0x31210--0x3121F /PURPLE
+            GROUP.CREATE "Interupts" C:0x31220--0x3122F /PURPLE
+            GROUP.CREATE "Interupts" C:0x31230--0x3123F /PURPLE
+            GROUP.CREATE "Interupts" C:0x31240--0x3124F /PURPLE
+            GROUP.CREATE "Interupts" C:0x31250--0x3125F /PURPLE
+            GROUP.CREATE "Interupts" C:0x31260--0x3126F /PURPLE
+            GROUP.CREATE "Interupts" C:0x31270--0x3127F /PURPLE
+            GROUP.CREATE "Interupts" C:0x31280--0x3128F /PURPLE
+            GROUP.CREATE "Interupts" C:0x31290--0x3129F /PURPLE
+            GROUP.CREATE "Interupts" C:0x312A0--0x312AF /PURPLE
+            GROUP.CREATE "Interupts" C:0x312B0--0x312BF /PURPLE
+            GROUP.CREATE "Interupts" C:0x312C0--0x312CF /PURPLE
+            GROUP.HIDE "other"
+		)
+        pos 10. 13. 10
+		button "HWI"
+		(
+            GROUP.CREATE "HWI" \hwi_ecu_startup /BLUE
+            GROUP.CREATE "HWI" \hwi_adc /BLUE
+            GROUP.CREATE "HWI" \hwi_api_macros /BLUE
+            GROUP.CREATE "HWI" \hwi_can /BLUE
+            GROUP.CREATE "HWI" \hwi_nvm /BLUE
+            GROUP.CREATE "HWI" \hwi_pwm /BLUE
+            GROUP.CREATE "HWI" \hwi_rm_emios /BLUE
+            GROUP.CREATE "HWI" \hwi_scheduler /BLUE
+            GROUP.CREATE "HWI" \hwi_spi /BLUE
+            GROUP.CREATE "HWI" \hwi_timer_system /BLUE
+            GROUP.CREATE "HWI" \hwi_dma_etpu /BLUE
+            GROUP.CREATE "HWI" \hwi_event_pwm /BLUE
+            GROUP.CREATE "HWI" \hwi_esci /BLUE
+            GROUP.CREATE "HWI" \hwi_cj125 /BLUE
+            GROUP.CREATE "HWI" \hwi_diagnostics /BLUE
+            GROUP.CREATE "HWI" \hwi_hbridge /BLUE
+            GROUP.CREATE "HWI" \hwi_nvm_spi /BLUE
+            GROUP.CREATE "HWI" \hwi_pic /BLUE
+            GROUP.CREATE "HWI" \hwi_callbacks /BLUE
+            GROUP.CREATE "HWI" \hwi_aps /BLUE
+            GROUP.CREATE "HWI" \hwi_dev_ram /BLUE
+            GROUP.CREATE "HWI" \hwi_dma_adc /BLUE
+            GROUP.CREATE "HWI" \hwi_etpu_resource_manager /BLUE
+            GROUP.CREATE "HWI" \hwi_event_generation /BLUE
+            GROUP.HIDE "other"
+       )
+		pos 10. 15. 10
+		button "SHOW ALL"
+		(
+			B::GROUP.RESET
+		)
+		pos 1. 19. 20
+		button "OK"
+		(
+			;&action=3
+			continue
+		)
+	)
+	stop
+	dialog.end
+
+
+if A.CONFIG.POWERTRACE()
+(
+    ;trace.STATISTIC.SORT SYMBOL
+    ;B::do my_Trace_Group.cmm
+)
+
+if POWERPROBE()
+(
+    ;B::DO my_PowerProbe.cmm
+)
+
+ENDDO
+
+;====================================================================================================================
+;                                                 SUB-ROUTINES
+;====================================================================================================================
+
+
+
+
+; ===================================================================================================================
+; Subroutine Name:
+; Parameter Returned:
+; Description:
+; ===================================================================================================================
+

@@ -1,0 +1,202 @@
+;===============================================my_Trace.cmm============================================================
+;
+; Description -  Used to load and view previously stored Trace data(*.ad) and Timing data(*.tad)
+; Action Button - 'View Trace' toolbar button which is only displayed when the simulator is used
+; Possible Upgrades -
+;====================================================================================================================
+
+
+;====================================================================================================================
+;                                              GLOBAL VARIABLES
+;====================================================================================================================
+
+global &adFile
+global &tadFile
+
+;====================================================================================================================
+;                                               LOCAL VARIABLES
+;====================================================================================================================
+
+;None
+
+;====================================================================================================================
+;                                                    MAIN
+;====================================================================================================================
+
+SYSTEM.RESET
+SYSTEM.CPU MPC5554
+
+;===================
+; load Trace data
+
+Gosub GetAdFile
+entry &adFile
+B::TRACE.LOAD &adFile
+
+
+;===================
+; load Timing data
+
+Gosub GetTadFile
+entry &tadFile
+PP::ANALYZER.LOAD &tadFile
+
+
+;===================
+; load symbol file
+
+Gosub GetSymbol_File
+entry &selFile
+
+; load the elf file but strip off the drive letter so that it is possible to work on a different drive to what it was built on
+; then make the default search path to the drive letter which was selected at startup
+
+d.load.elf &selFile /nocode /strippart 1
+symbol.spath "&(Drive_Letter)\"
+
+
+
+;===================
+; load groups and display the required windows sorted by symbols
+; personalised groups or windows can be modifed and then saved in lauterbach although their need to be check out first
+
+trace.STATISTIC.SORT SYMBOL
+B::do my_Simulator_Windows.cmm
+PP::do my_PowerProbe.cmm
+B::
+
+
+;===============================
+; Save windows layout if desired
+setup.quitdo myQuitBatchfile.cmm
+
+
+ENDDO
+
+
+
+;====================================================================================================================
+;                                                 SUB-ROUTINES
+;====================================================================================================================
+
+
+
+; ===================================================================================================================
+; Subroutine Name: GetSymbol_File
+; Parameter Returned: The path of the symbol file
+; Description: Requests the user to select the symbol file
+; ===================================================================================================================
+
+GetSymbol_File:
+&count=0
+
+  DIALOG
+  (
+      header "Browse for Symbol File (*.elf)"
+      POS 1. 1. 40.
+      LAB: EDIT "" ""
+      POS 42. 1. 7.
+      BUTTON "Browse"
+      (
+         if "&Symbol_File"==""
+         (
+             dialog.setfile LAB "&Elf_File_Dir"\*.elf
+         )
+         else
+         (
+             &count=&count+1
+             if &count>1
+                dialog.setfile LAB "&Elf_File_Dir"\*.elf
+             else
+                dialog.setfile LAB "&Symbol_File"
+         )
+      )
+      POS 22. 3. 9.
+      DEFBUTTON " OK " "continue"
+  )
+  stop
+  &Symbol_File=dialog.string(LAB)
+  dialog.end
+  RETURN &Symbol_File
+
+
+
+; ===================================================================================================================
+; Subroutine Name: GetAdFile
+; Parameter Returned: The path of the Trace Data file (*.ad)
+; Description: Requests the user to select the Trace Data file (*.ad)
+; ===================================================================================================================
+
+GetAdFile:
+&count=0
+
+  DIALOG
+  (
+      header "Browse for Trace Data (*.ad)"
+      POS 1. 1. 40.
+      LAB: EDIT "" ""
+      POS 42. 1. 7.
+      BUTTON "Browse"
+      (
+         if "&adFile"==""
+         (
+             dialog.setfile LAB "&Trace_Data_Dir"\*.ad
+         )
+         else
+         (
+             &count=&count+1
+             if &count>1
+                dialog.setfile LAB "&Trace_Data_Dir"\*.ad
+             else
+                dialog.setfile LAB "&adFile"
+         )
+      )
+      POS 22. 3. 9.
+      DEFBUTTON " OK " "continue"
+  )
+  stop
+  &adFile=dialog.string(LAB)
+  dialog.end
+  RETURN &adFile
+
+
+
+; ===================================================================================================================
+; Subroutine Name: GetTadFile
+; Parameter Returned: The path of the Timing Data file (*.ad)
+; Description: Requests the user to select the Timing Data file (*.ad)
+; ===================================================================================================================
+
+GetTadFile:
+&count=0
+
+  DIALOG
+  (
+      header "Browse for Timing Data (*.tad)"
+      POS 1. 1. 40.
+      LAB: EDIT "" ""
+      POS 42. 1. 7.
+      BUTTON "Browse"
+      (
+         if "&tadFile"==""
+         (
+             dialog.setfile LAB "&Trace_Data_Dir"\*.tad
+         )
+         else
+         (
+             &count=&count+1
+             if &count>1
+                dialog.setfile LAB "&Trace_Data_Dir"\*.tad
+             else
+                dialog.setfile LAB "&tadFile"
+         )
+      )
+      POS 22. 3. 9.
+      DEFBUTTON " OK " "continue"
+  )
+  stop
+  &tadFile=dialog.string(LAB)
+  dialog.end
+  RETURN &tadFile
+
+
